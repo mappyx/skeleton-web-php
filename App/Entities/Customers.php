@@ -3,7 +3,10 @@ namespace App\Entities;
 
 use Database\Database;
 
-class Customers {
+use App\Entities\Contracts\CustomersInterface;
+
+class Customers extends Entity implements CustomersInterface
+{
     protected $table;
     protected $connection;
     protected $id;

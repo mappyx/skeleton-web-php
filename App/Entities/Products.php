@@ -2,8 +2,10 @@
 namespace App\Entities;
 
 use Database\Database;
+use App\Entities\Contracts\ProductsInterface;
 
-class Products {
+class Products extends Entity implements ProductsInterface
+{
     protected $id;
     protected $name;
     protected $description;

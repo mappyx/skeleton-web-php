@@ -2,8 +2,10 @@
 namespace App\Entities;
 
 use Database\Database;
+use App\Entities\Contracts\OrdersInterface;
 
-class Orders {
+class Orders extends Entity implements OrdersInterface
+{
     protected $id;
     protected $customer_id;
     protected $total_price;
