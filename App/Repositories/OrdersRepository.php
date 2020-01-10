@@ -19,14 +19,14 @@ class OrdersRepository extends AbstractRepository implements OrdersRepositoryInt
         $this->entity = null;
     }
 
-        /**
+    /**
      * Store a new Entity
      * @param array $params
      * @return mixed
      */
     public function create(array $params)
     {
-        
+        $this->entity->insert($params);
     }
 
     /**
@@ -36,8 +36,7 @@ class OrdersRepository extends AbstractRepository implements OrdersRepositoryInt
      */
     public function deleteById(int $id)
     {
-        $entity = $this->findById($id);
-        return $entity->delete();
+        return $this->entity->delete('id', $id);
     }
 
     /**
@@ -48,7 +47,7 @@ class OrdersRepository extends AbstractRepository implements OrdersRepositoryInt
      */
     public function updateById(array $params, int $id)
     {
-
+        $this->entity->update($params, $id);
     }
 
     /**

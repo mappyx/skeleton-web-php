@@ -26,7 +26,7 @@ class CustomersRepository extends AbstractRepository implements CustomersReposit
      */
     public function create(array $params)
     {
-        
+        $this->entity->insert($params);
     }
 
     /**
@@ -36,8 +36,7 @@ class CustomersRepository extends AbstractRepository implements CustomersReposit
      */
     public function deleteById(int $id)
     {
-        $entity = $this->findById($id);
-        return $entity->delete();
+        return $this->entity->delete('id', $id);
     }
 
     /**
@@ -48,7 +47,7 @@ class CustomersRepository extends AbstractRepository implements CustomersReposit
      */
     public function updateById(array $params, int $id)
     {
-
+        $this->entity->update($params, $id);
     }
 
     /**
