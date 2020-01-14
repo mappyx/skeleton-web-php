@@ -1,6 +1,8 @@
 <?php
+session_start();
 include_once('app.php');
 include_once('System/Autoloader.php');
+
 
 Autoloader::register();
 

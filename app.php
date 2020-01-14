@@ -18,6 +18,12 @@ class App {
     }
 
     public function run() {
+        $this->renderView('');
+    }
 
+    public function renderView(string $view)
+    {
+        $view = Helpers::getView();
+        echo $view;
     }
 }
