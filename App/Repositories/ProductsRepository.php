@@ -3,15 +3,14 @@ namespace App\Repositories;
 
 use App\Repositories\Contracts\ProductsRepositoryInterface;
 use App\Entities\Products as Entity;
-use Database\Database;
 
 class ProductsRepository extends AbstractRepository implements ProductsRepositoryInterface
 {
     protected $entity;
 
-    public function __construct(Database &$db)
+    public function __construct()
     {
-        $this->entity = new Entity($db);
+        $this->entity = new Entity();
     }
 
     public function __destruct()

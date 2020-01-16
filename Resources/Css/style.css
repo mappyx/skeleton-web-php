@@ -1,0 +1,40 @@
+article,
+aside,
+dialog,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+nav,
+section {
+  display: block;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    display: -webkit-flex;
+    /* Safari */
+    /* Safari 6.1+ */
+    display: flex;
+}
+
+.footer .container {
+
+}
+
+.footer .container .copyright {
+    padding: 0.9375rem 0;
+}
+
+.float-center {
+    text-align: center;
+}
+
+.table{width: 65%;float: left;}
+.shipAddr{width: 30%;float: left;margin-left: 30px;}
+.footBtn{width: 95%;float: left;}
+.orderBtn {float: right;}

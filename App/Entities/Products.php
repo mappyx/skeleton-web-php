@@ -15,12 +15,11 @@ class Products extends Entity implements ProductsInterface
     protected $status;
 
     protected $table;
-    protected $connection;
 
-    public function __construct(Database &$db)
+    public function __construct()
     {
+        Parent::__construct();
         $this->table = 'products';
-        $this->connection = $db->getConn();
     }
 
     public function __destruct()
