@@ -22,10 +22,6 @@ section {
     display: flex;
 }
 
-.footer .container {
-
-}
-
 .footer .container .copyright {
     padding: 0.9375rem 0;
 }
@@ -33,7 +29,7 @@ section {
 .float-center {
     text-align: center;
 }
-
+.cart-link{width: 100%;text-align: right;display: block;font-size: 22px;}
 .table{width: 65%;float: left;}
 .shipAddr{width: 30%;float: left;margin-left: 30px;}
 .footBtn{width: 95%;float: left;}
