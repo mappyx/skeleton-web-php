@@ -9,6 +9,12 @@ class Helpers {
         return $config[$name];
     }
 
+    public static function getRoute(string $name)
+    {
+        include 'Routes.php';
+        return $routes[$name];
+    }
+
     public static function getResourceJS(string $nameResource)
     {
         $path = URL . 'Resources/Js/' . $nameResource . '.js';

@@ -21,6 +21,7 @@ class HomeController extends Controller
     public function index()
     {
         $products = $this->products->getAllRecord();
+        
         return $products;
     }
 }

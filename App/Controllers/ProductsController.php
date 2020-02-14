@@ -12,4 +12,9 @@ class ProductsController extends Controller
     {
         
     }
+
+    public function index()
+    {
+        echo "productis";
+    }
 }

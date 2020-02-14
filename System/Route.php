@@ -20,8 +20,16 @@ class Route {
         $this->base_url = $this->getCurrentUri();
         $this->routes = explode('/', $this->base_url);
 
-        $this->getParams(); //invocamos el neuvo método
+        $this->getParams();
         return $this->routes;
+    }
+
+    public function parseStringRoute(): string
+    {
+        $this->base_url = $this->getCurrentUri();
+        
+        $route = $this->base_url;
+        return $route;
     }
 
     private function getCurrentUri()
