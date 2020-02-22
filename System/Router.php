@@ -16,11 +16,6 @@ class Router
 
         if (is_array($urlDefine)) {
             $file = ROOT . "App/Controllers" . DS . $urlDefine['controller'] . ".php";
-            $method = $request->getMethod();
-            if ($method = 'index.php') {
-                $method = 'index';
-            }
-            $arguments = $request->getArguments();
     
             if (is_readable($file)) {
                 try {
@@ -28,12 +23,8 @@ class Router
                     $class = 'App\Controllers\\' . $urlDefine['controller'];
                     
                     $instanceController = Factory::setup($class);
-    
-                    if (isset($arguments)) {
-                        $dataController = call_user_func(array($instanceController,$urlDefine['action']));
-                    } else {
-                        $dataController = call_user_func_array(array($instanceController,$urlDefine['action']), $arguments);
-                    }
+                    
+                    $dataController = call_user_func_array(array($instanceController,$urlDefine['action']), $arguments);
     
                 } catch(Exception $e) {
                     print_r($e);
