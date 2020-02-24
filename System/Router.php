@@ -5,15 +5,15 @@ use Exception;
 use System\Request;
 use System\Route;
 use System\Factory;
+use System\Contracts\RouteInterface;
+use ReflectionMethod;
 
 class Router
 {
-    public static function run(Request $request)
+    
+    public static function run(RouteInterface $route)
     {
-        $routes = new Route(true);
-        $routeInString = $routes->parseStringRoute();
-        $urlDefine = Helpers::getRoute($routeInString);
-
+        $urlDefine = Helpers::getRoute($route->parseStringRoute());
         if (is_array($urlDefine)) {
             $file = ROOT . "App/Controllers" . DS . $urlDefine['controller'] . ".php";
     
@@ -24,8 +24,8 @@ class Router
                     
                     $instanceController = Factory::setup($class);
                     
-                    $dataController = call_user_func_array(array($instanceController,$urlDefine['action']), $arguments);
-    
+                    self::__callMethodWithParametersFromController($class, $urlDefine['action'], $route);
+
                 } catch(Exception $e) {
                     print_r($e);
                 }
@@ -39,8 +39,26 @@ class Router
                 echo $path;
             }
         } else {
-            header("Status: 301 Moved Permanently");
-            header("Location: ".Helpers::config('url'));
+            //header("Status: 301 Moved Permanently");
+            //header("Location: ".Helpers::config('url'));
         }
+    }
+
+    protected static function __callMethodWithParametersFromController(string $class, string $method, RouteInterface $route)
+    {
+        $fire_args = array();
+        $args = $route->getParamsFromUrl();
+        var_dump($args);
+        $reflection = new ReflectionMethod($class, $method);
+        
+        foreach($reflection->getParameters() as $arg) {
+            if($args[$arg->name]) {
+                $fire_args[$arg->name]=$args[$arg->name];
+            } else {
+                $fire_args[$arg->name]=null;
+            }
+        }
+       
+    return call_user_func_array(array($class, $method), $fire_args);
     }
 }

@@ -1,20 +1,20 @@
 <?php
 namespace System;
 
-class Request
-{
-    protected $controller;
-    protected $method;
-    protected $arguments;
-    protected $methodHttp;
+use System\Contracts\RequestInterface;
+use System\Contracts\RouteInterface as Route;
+use ReflectionParameter;
+use ReflectionMethod;
 
-    public function __construct()
+class Request implements RequestInterface
+{
+
+    protected $route;
+
+    public function __construct(Route $route)
     {
-        if (isset($_GET['url'])) {
-            $route = filter_input(INPUT_GET, 'url', FILTER_SANITIZE_URL);
-            $route = explode('/', $route);
-            $route = array_filter($route);
-        }
+        $this->route = $route;
+        $p = new ReflectionParameter(array('Some_Class', 'someMethod'));
     }
     
     public function __destruct()

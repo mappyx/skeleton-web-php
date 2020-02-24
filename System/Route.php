@@ -1,7 +1,10 @@
 <?php
 namespace System;
 
-class Route {
+use System\Contracts\RouteInterface;
+
+class Route implements RouteInterface
+{
 
     private $basepath;
     private $uri;
@@ -57,5 +60,10 @@ class Route {
             $this->routes[0] = $this->params;
             array_pop($this->routes);
         }
+    }
+
+    public function getParamsFromUrl(): array
+    {
+        return $this->routes[0] ?? [];
     }
 }

@@ -1,7 +1,7 @@
 <?php
 namespace System;
 
-use System\Request;
+use System\Route;
 use System\Router;
 use Resources\Views\Template as ViewsTemplate;
 
@@ -21,6 +21,6 @@ class App {
 
     public function run() {
         $template = new ViewsTemplate();
-        Router::run(new Request);
+        Router::run(new Route(true));
     }
 }
