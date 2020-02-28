@@ -1,14 +1,11 @@
 <?php
 namespace App\Entities;
 
-use Database\Database;
-
 use App\Entities\Contracts\CustomersInterface;
 
 class Customers extends Entity implements CustomersInterface
 {
-    protected $table;
-    protected $connection;
+    
     protected $id;
     protected $name;
     protected $email;
@@ -18,15 +15,15 @@ class Customers extends Entity implements CustomersInterface
     protected $modified;
     protected $status;
 
-    public function __construct(Database &$db)
+    public function __construct()
     {
         $this->table = 'customers';
-        $this->connection = $db->getConn();
+        Parent::__construct();
     }
 
     public function __destruct()
     {
-        $this->conn = null;
+        Parent::__destruct();
     }
 
     public function select(array $column = ['*'])

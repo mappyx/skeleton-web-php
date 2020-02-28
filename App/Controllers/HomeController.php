@@ -18,8 +18,8 @@ class HomeController extends Controller
         
     }
 
-    public function index()
+    public function index($opt = null)
     {
-        return $products = "productos";
+        return 'hola';
     }
 }

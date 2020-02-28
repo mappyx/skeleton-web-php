@@ -14,6 +14,7 @@ class Router
     public static function run(RouteInterface $route)
     {
         $urlDefine = Helpers::getRoute($route->parseStringRoute());
+
         if (is_array($urlDefine)) {
             $file = ROOT . "App/Controllers" . DS . $urlDefine['controller'] . ".php";
     
@@ -24,8 +25,8 @@ class Router
                     
                     $instanceController = Factory::setup($class);
                     
-                    self::__callMethodWithParametersFromController($class, $urlDefine['action'], $route);
-
+                    $dataController = self::__callMethodWithParametersFromController($instanceController, $urlDefine['action'], $route);
+                    
                 } catch(Exception $e) {
                     print_r($e);
                 }
@@ -35,6 +36,7 @@ class Router
     
             if (is_readable($path)) {
                 require_once($path);
+                
             } else {
                 echo $path;
             }
@@ -44,21 +46,25 @@ class Router
         }
     }
 
-    protected static function __callMethodWithParametersFromController(string $class, string $method, RouteInterface $route)
+    protected function __callMethodWithParametersFromController($class, string $method, RouteInterface $route)
     {
         $fire_args = array();
         $args = $route->getParamsFromUrl();
-        var_dump($args);
-        $reflection = new ReflectionMethod($class, $method);
         
+        $reflection = new ReflectionMethod($class, $method);
+
+        if (empty($reflection->getParameters())) {
+            return call_user_func_array(array($class, $method), []);
+        }
+
         foreach($reflection->getParameters() as $arg) {
-            if($args[$arg->name]) {
-                $fire_args[$arg->name]=$args[$arg->name];
+            if ($args[$arg->name]) {
+                $fire_args[$arg->name] = $args[$arg->name];
             } else {
-                $fire_args[$arg->name]=null;
+                $fire_args[$arg->name] = null;
             }
         }
-       
+
     return call_user_func_array(array($class, $method), $fire_args);
     }
 }

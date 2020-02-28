@@ -1,7 +1,6 @@
 <?php
 namespace App\Entities;
 
-use Database\Database;
 use App\Entities\Contracts\ProductsInterface;
 
 class Products extends Entity implements ProductsInterface
@@ -14,8 +13,6 @@ class Products extends Entity implements ProductsInterface
     protected $modified;
     protected $status;
 
-    protected $table;
-
     public function __construct()
     {
         Parent::__construct();
@@ -24,7 +21,7 @@ class Products extends Entity implements ProductsInterface
 
     public function __destruct()
     {
-        $this->conn = null;
+        Parent::__destruct();
     }
 
     public function select(array $column = ['*'])

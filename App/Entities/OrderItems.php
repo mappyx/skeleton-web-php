@@ -10,18 +10,15 @@ class OrderItems extends Entity implements OrderItemsInterface{
     protected $product_id;
     protected $quantity;
 
-    protected $table;
-    protected $connection;
-
     public function __construct(Database &$db)
     {
         $this->table = 'order_items';
-        $this->connection = $db->getConn();
+        Parent::__construct();
     }
 
     public function __destruct()
     {
-        $this->conn = null;
+        Parent::__destruct();
     }
 
     public function select(array $column = ['*'])

@@ -13,18 +13,15 @@ class Orders extends Entity implements OrdersInterface
     protected $modified;
     protected $status;
 
-    protected $table;
-    protected $connection;
-
     public function __construct(Database &$db)
     {
         $this->table = 'orders';
-        $this->connection = $db->getConn();
+        Parent::__construct();
     }
 
     public function __destruct()
     {
-        $this->conn = null;
+        Parent::__destruct();
     }
 
     public function select(array $column = ['*'])

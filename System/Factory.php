@@ -5,6 +5,8 @@ use ReflectionClass;
 
 class Factory {
 
+    const CLASS_ENTITY_DIR = 'App\Entities\\';
+
     public function __construct()
     {
         
@@ -22,5 +24,10 @@ class Factory {
         } catch (\Exception $e) {
             print_r('Error in setup Instance - '.$e);
         }
+    }
+
+    public static function setupEntity(string $entityName, array $args = [])
+    {
+        return self::setup(self::CLASS_ENTITY_DIR.$entityName, $args);   
     }
 }

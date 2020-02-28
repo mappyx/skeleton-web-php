@@ -26,4 +26,9 @@ class Helpers {
         $path = URL . 'Resources/Css/' . $nameResource . '.css';
         echo $path;
     }
+
+    public static function getCurrentTime()
+    {
+        return date('Y-m-d H:i:s');;
+    }
 }

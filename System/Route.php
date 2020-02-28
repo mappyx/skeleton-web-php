@@ -5,65 +5,53 @@ use System\Contracts\RouteInterface;
 
 class Route implements RouteInterface
 {
-
-    private $basepath;
-    private $uri;
-    private $base_url;
-    private $routes;
     private $route;
-    private $params;
+
     private $get_params;
 
-    function __construct($get_params = false) {
+    function __construct(bool $get_params = true)
+    {
         $this->get_params = $get_params;
     }
 
-    public function getRoutes()
+    public function getRoutes(): array
     {
-        $this->base_url = $this->getCurrentUri();
-        $this->routes = explode('/', $this->base_url);
-
-        $this->getParams();
-        return $this->routes;
+        $base_url = $this->getCurrentUri();
+        $this->route = explode('/', $base_url);
+        return $this->route;
     }
 
     public function parseStringRoute(): string
     {
-        $this->base_url = $this->getCurrentUri();
-        
-        $route = $this->base_url;
+        $route = $this->getCurrentUri();
         return $route;
     }
 
-    private function getCurrentUri()
+    private function getCurrentUri(): string
     {
-        $this->basepath = implode('/', array_slice(explode('/', $_SERVER['SCRIPT_NAME']), 0, -1)) . '/';
-        $this->uri = substr($_SERVER['REQUEST_URI'], strlen($this->basepath));
+        $basepath = implode('/', array_slice(explode('/', $_SERVER['SCRIPT_NAME']), 0, -1)) . '/';
+        
+        $uri = substr($_SERVER['REQUEST_URI'], strlen($basepath));
+        
+        if (strstr($uri, '?')) $uri = substr($uri, 0, strpos($uri, '?'));
 
-        if($this->get_params) {
-            $this->getParams();
-        } else {
-            if (strstr($this->uri, '?')) $this->uri = substr($this->uri, 0, strpos($this->uri, '?'));
-        }
+        $uri = '/' . trim($uri, '/');
 
-        $this->uri = '/' . trim($this->uri, '/');
-        return $this->uri;
-    }
-
-    private function getParams()
-    {
-        if (strstr($this->uri, '?')) {
-            $params = explode("?", $this->uri);
-            $params = $params[1];
-
-            parse_str($params, $this->params);
-            $this->routes[0] = $this->params;
-            array_pop($this->routes);
-        }
+        return $uri;
     }
 
     public function getParamsFromUrl(): array
     {
-        return $this->routes[0] ?? [];
+        $basepath = implode('/', array_slice(explode('/', $_SERVER['SCRIPT_NAME']), 0, -1)) . '/';
+        $uri = substr($_SERVER['REQUEST_URI'], strlen($basepath));
+        //$uri = substr($uri, 0, strpos($uri, '?'));
+        
+        if (strstr($uri, '?')) {
+            $params = explode("?", $uri);
+            $params = $params[1];
+
+            parse_str($params, $params);
+        }
+        return $params ?? [];
     }
 }

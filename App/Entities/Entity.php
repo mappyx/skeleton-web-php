@@ -4,8 +4,10 @@ namespace App\Entities;
 use Database\Database;
 use System\Helpers;
 
-class Entity
+class Entity 
 {
+
+    protected $table;
     protected $connection;
     protected $database;
 
@@ -18,5 +20,11 @@ class Entity
     public function __destruct()
     {
         $this->database = null;
+        $this->connection = null;
+    }
+
+    protected function getCurrentTime()
+    {
+        return date('Y-m-d H:i:s');;
     }
 }

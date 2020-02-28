@@ -16,7 +16,6 @@ Autoloader::register();
 $app = new App();
 
 try {
-    
     $app->run();
 } catch (Exception $e) {
     echo $e;
