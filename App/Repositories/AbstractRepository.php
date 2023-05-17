@@ -1,10 +1,13 @@
 <?php
+
 namespace App\Repositories;
 
 use System\Factory;
-
-abstract class AbstractRepository
+use App\Repositories\Contracts\RepositoryBasicActionInterface;
+use App\Entities\Contracts\BasicActionEntityInterface;
+abstract class AbstractRepository implements RepositoryBasicActionInterface
 {
+    /** @var BasicActionEntityInterface */
     protected $entity;
 
     public function __construct(string $entityName, array $args)
@@ -19,33 +22,12 @@ abstract class AbstractRepository
 
     /**
      * Store a new Entity
-     * @param array $params
-     * @return mixed
-     */
-    public function create(array $params)
-    {
-        $this->entity->insert($params);
-    }
-
-    /**
-     * Delete a entity, find by id
-     * @param int $id
+     * @param array $attributes
      * @return bool
      */
-    public function deleteById(int $id)
+    public function create(array $attributes): bool
     {
-        return $this->entity->delete('id', $id);
-    }
-
-    /**
-     * Update a entity in bd, find by id
-     * @param array $params
-     * @param int $id
-     * @return mixed
-     */
-    public function updateById(array $params, int $id)
-    {
-        $this->entity->update($params, $id);
+        return $this->entity->insert($attributes);
     }
 
     /**
@@ -55,8 +37,28 @@ abstract class AbstractRepository
      */
     public function findById(int $id)
     {
-        $result = $this->entity->selectWhere('id',$id);
-        return $result;
+        return $this->entity->selectWhere('id', $id);
+    }
+
+    /**
+     * Update a entity in db, find by id
+     * @param int $id
+     * @param array $attributes
+     * @return bool
+     */
+    public function updateById(int $id, array $attributes): bool
+    {
+        return $this->entity->update($attributes, $id, 'id');
+    }
+
+    /**
+     * Delete a entity, find by id
+     * @param int $id
+     * @return bool
+     */
+    public function deleteById(int $id): bool
+    {
+        return $this->entity->delete('id', $id);
     }
 
     /**
@@ -64,20 +66,19 @@ abstract class AbstractRepository
      * @param array $columns
      * @return mixed
      */
-    public function getAllRecord($columns = ['*'])
+    public function getAll(array $columns = ['*'])
     {
         return $this->entity->select($columns);
     }
 
     /**
-     * Find By a Column name
-     * @param string $nameColumn
-     * @param mixed $data
+     * Find entities by column value
+     * @param string $column
+     * @param mixed $value
      * @return mixed
      */
-    public function findByColumnName(string $nameColumn, $data)
+    public function findByColumn(string $column, $value)
     {
-        $result = $this->entity->selectWhere($nameColumn,$data);
-        return $result;
+        return $this->entity->selectWhere($column, $value);
     }
 }

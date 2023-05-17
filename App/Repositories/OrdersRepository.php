@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repositories;
 
 use App\Repositories\Contracts\OrdersRepositoryInterface;
@@ -9,12 +10,12 @@ class OrdersRepository extends AbstractRepository implements OrdersRepositoryInt
 
     public function __construct()
     {
-        Parent::__construct('Orders', []);
+        parent::__construct('Orders', []);
     }
 
     public function __destruct()
     {
-        Parent::__destruct();
+        parent::__destruct();
     }
 
 }

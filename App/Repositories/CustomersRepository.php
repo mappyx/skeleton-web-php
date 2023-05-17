@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repositories;
 
 use App\Repositories\Contracts\CustomersRepositoryInterface;
@@ -8,11 +9,11 @@ class CustomersRepository extends AbstractRepository implements CustomersReposit
 
     public function __construct()
     {
-        Parent::__construct('Customers', []);
+        parent::__construct('Customers', []);
     }
 
     public function __destruct()
     {
-        Parent::__destruct();
+        parent::__destruct();
     }
 }

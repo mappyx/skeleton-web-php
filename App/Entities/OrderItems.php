@@ -1,77 +1,65 @@
 <?php
+
 namespace App\Entities;
 
 use Database\Database;
 use App\Entities\Contracts\OrderItemsInterface;
 
-class OrderItems extends Entity implements OrderItemsInterface{
+class OrderItems extends Entity implements OrderItemsInterface
+{
     protected $id;
     protected $order_id;
     protected $product_id;
     protected $quantity;
 
-    public function __construct(Database &$db)
+    public function __construct()
     {
         $this->table = 'order_items';
-        Parent::__construct();
+        parent::__construct();
     }
 
-    public function __destruct()
+    public function select(array $columns = ['*']): array
     {
-        Parent::__destruct();
-    }
-
-    public function select(array $column = ['*'])
-    {
-        if (count($column) == 1) $columnName = $column[0];
-        if (count($column) > 1) $columnName = implode(", ", $column);
-        $statement =  $this->connection->prepare("SELECT $columnName FROM $this->table");
+        $columnName = implode(', ', $columns);
+        $statement = $this->connection->prepare("SELECT $columnName FROM $this->table");
         $statement->execute();
-        $results = $statement->fetchAll(\PDO::FETCH_OBJ);
-        return $results;
+        return $statement->fetchAll(\PDO::FETCH_OBJ);
     }
 
-    public function selectWhere(string $columnWhere, $value, array $column = ['*'])
+    public function selectWhere(string $column, $value, array $columns = ['*']): array
     {
-        if (count($column) == 1) $columnName = $column[0];
-        if (count($column) > 1) $columnName = implode(", ", $column);
-        $statement =  $this->connection->prepare("SELECT $columnName FROM $this->table where $columnWhere=$value");
-        $statement->execute();
-        $results = $statement->fetchAll(\PDO::FETCH_OBJ);
-        return $results;
+        $columnName = implode(', ', $columns);
+        $statement = $this->connection->prepare("SELECT $columnName FROM $this->table WHERE $column = ?");
+        $statement->execute([$value]);
+        return $statement->fetchAll(\PDO::FETCH_OBJ);
     }
 
-    public function delete(string $column, $value)
+    public function delete(string $column, $value): bool
     {
-        if ($this->connection->exec("DELETE FROM $this->table WHERE $column=$value")) {
-            return true;
-        } else {
-            return false;
-        }
+        $statement = $this->connection->prepare("DELETE FROM $this->table WHERE $column = ?");
+        $statement->execute([$value]);
+        return $statement->rowCount() > 0;
     }
 
-    public function insert(array $args)
+    public function insert(array $values): bool
     {
         $statement = $this->connection->prepare("
-        INSERT INTO $this->table (id, order_id, product_id, quantity)
-         VALUES (null, :order_id, :product_id, :quantity)
+            INSERT INTO $this->table (order_id, product_id, quantity)
+            VALUES (:order_id, :product_id, :quantity)
         ");
-        $statement->bindParam(':order_id', $args['order_id']);
-        $statement->bindParam(':product_id', $args['product_id']);
-        $statement->bindParam(':quantity', $args['quantity']);
-        $statement->execute();
+        $statement->execute($values);
+        return $statement->rowCount() > 0;
     }
 
-    public function update(array $args, $value, string $column = 'id')
+    public function update(array $values, $id, string $column = 'id'): bool
     {
         $statement = $this->connection->prepare("
-        UPDATE $this->table SET
-        order_id=:order_id, product_id=:product_id, quantity=:quantity
-         where $column=:value");
-        $statement->bindParam(':order_id', $args['order_id']);
-        $statement->bindParam(':product_id', $args['product_id']);
-        $statement->bindParam(':quantity', $args['quantity']);
-        $statement->bindParam(':value', $value);
-        $statement->execute();
+            UPDATE $this->table SET
+            order_id = :order_id, product_id = :product_id, quantity = :quantity
+            WHERE $column = :id
+        ");
+        $values['id'] = $id;
+        $statement->execute($values);
+        return $statement->rowCount() > 0;
     }
 }

@@ -1,11 +1,11 @@
 <?php
+
 namespace App\Entities;
 
 use App\Entities\Contracts\CustomersInterface;
 
 class Customers extends Entity implements CustomersInterface
 {
-    
     protected $id;
     protected $name;
     protected $email;
@@ -18,73 +18,54 @@ class Customers extends Entity implements CustomersInterface
     public function __construct()
     {
         $this->table = 'customers';
-        Parent::__construct();
+        parent::__construct();
     }
 
-    public function __destruct()
+    public function select(array $columns = ['*']): array
     {
-        Parent::__destruct();
-    }
-
-    public function select(array $column = ['*'])
-    {
-        if (count($column) == 1) $columnName = $column[0];
-        if (count($column) > 1) $columnName = implode(", ", $column);
-        $statement =  $this->connection->prepare("SELECT $columnName FROM $this->table");
+        $columnName = implode(', ', $columns);
+        $statement = $this->connection->prepare("SELECT $columnName FROM $this->table");
         $statement->execute();
-        $results = $statement->fetchAll(\PDO::FETCH_OBJ);
-        return $results;
+        return $statement->fetchAll(\PDO::FETCH_OBJ);
     }
 
-    public function selectWhere(string $columnWhere, $value, array $column = ['*'])
+    public function selectWhere(string $column, $value, array $columns = ['*']): array
     {
-        if (count($column) == 1) $columnName = $column[0];
-        if (count($column) > 1) $columnName = implode(", ", $column);
-        $statement =  $this->connection->prepare("SELECT $columnName FROM $this->table where $columnWhere=$value");
-        $statement->execute();
-        $results = $statement->fetchAll(\PDO::FETCH_OBJ);
-        return $results;
+        $columnName = implode(', ', $columns);
+        $statement = $this->connection->prepare("SELECT $columnName FROM $this->table WHERE $column = ?");
+        $statement->execute([$value]);
+        return $statement->fetchAll(\PDO::FETCH_OBJ);
     }
 
-    public function delete(string $column, $value)
+    public function delete(string $column, $value): bool
     {
-        if ($this->connection->exec("DELETE FROM $this->table WHERE $column=$value")) {
-            return true;
-        } else {
-            return false;
-        }
+        $statement = $this->connection->prepare("DELETE FROM $this->table WHERE $column = ?");
+        $statement->execute([$value]);
+        return $statement->rowCount() > 0;
     }
 
-    public function insert(array $args)
+    public function insert(array $values): bool
     {
         $statement = $this->connection->prepare("
-        INSERT INTO $this->table (id, name, email, phone, address, created, modified, status)
-         VALUES (null, :name, :email, :phone, :address, :created, :modified, :status)
+            INSERT INTO $this->table (name, email, phone, address, created, modified, status)
+            VALUES (:name, :email, :phone, :address, :created, :modified, :status)
         ");
-        $statement->bindParam(':name', $args['name']);
-        $statement->bindParam(':email', $args['email']);
-        $statement->bindParam(':phone', $args['phone']);
-        $statement->bindParam(':address', $args['address']);
-        $statement->bindParam(':created', $args['created']);
-        $statement->bindParam(':modified', $args['modified']);
-        $statement->bindParam(':status', $args['status']);
-        $statement->execute();
+        $values['created'] = $this->getCurrentTime();
+        $values['modified'] = $this->getCurrentTime();
+        $statement->execute($values);
+        return $statement->rowCount() > 0;
     }
 
-    public function update(array $args, $value, string $column = 'id')
+    public function update(array $values, $id, string $column = 'id'): bool
     {
         $statement = $this->connection->prepare("
-        UPDATE $this->table SET
-         name=:name, email=:email, phone=:phone, address=:address, created=:created, modified=:modified, status=:status
-         where $column=:value");
-        $statement->bindParam(':name', $args['name']);
-        $statement->bindParam(':email', $args['email']);
-        $statement->bindParam(':phone', $args['phone']);
-        $statement->bindParam(':address', $args['address']);
-        $statement->bindParam(':created', $args['created']);
-        $statement->bindParam(':modified', $args['modified']);
-        $statement->bindParam(':status', $args['status']);
-        $statement->bindParam(':value', $value);
-        $statement->execute();
+            UPDATE $this->table SET
+            name = :name, email = :email, phone = :phone, address = :address, modified = :modified, status = :status
+            WHERE $column = :id
+        ");
+        $values['modified'] = $this->getCurrentTime();
+        $values['id'] = $id;
+        $statement->execute($values);
+        return $statement->rowCount() > 0;
     }
 }

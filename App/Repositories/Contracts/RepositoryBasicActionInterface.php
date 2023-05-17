@@ -1,29 +1,15 @@
 <?php
+
 namespace App\Repositories\Contracts;
 
 interface RepositoryBasicActionInterface
 {
     /**
      * Store a new Entity
-     * @param array $params
+     * @param array $attributes
      * @return mixed
      */
-    public function create(array $params);
-
-    /**
-     * Delete a entity, find by id
-     * @param int $id
-     * @return bool
-     */
-    public function deleteById(int $id);
-
-    /**
-     * Update a entity in bd, find by id
-     * @param array $params
-     * @param int $id
-     * @return mixed
-     */
-    public function updateById(array $params, int $id);
+    public function create(array $attributes);
 
     /**
      * Find a entity by id
@@ -33,17 +19,32 @@ interface RepositoryBasicActionInterface
     public function findById(int $id);
 
     /**
+     * Update a entity in db, find by id
+     * @param array $attributes
+     * @param int $id
+     * @return bool
+     */
+    public function updateById(int $id, array $attributes): bool;
+
+    /**
+     * Delete a entity, find by id
+     * @param int $id
+     * @return bool
+     */
+    public function deleteById(int $id): bool;
+
+    /**
      * Get all records
      * @param array $columns
      * @return mixed
      */
-    public function getAllRecord($columns = ['*']);
+    public function getAll(array $columns = ['*']);
 
     /**
-     * Find By a Column name
-     * @param string $nameColumn
-     * @param mixed $data
+     * Find entities by column value
+     * @param string $column
+     * @param mixed $value
      * @return mixed
      */
-    public function findByColumnName(string $nameColumn, $data);
+    public function findByColumn(string $column, $value);
 }

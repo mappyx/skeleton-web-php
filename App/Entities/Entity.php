@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Entities;
 
 use Database\Database;
@@ -6,7 +7,6 @@ use System\Helpers;
 
 class Entity 
 {
-
     protected $table;
     protected $connection;
     protected $database;
@@ -23,8 +23,8 @@ class Entity
         $this->connection = null;
     }
 
-    protected function getCurrentTime()
+    protected function getCurrentTime(): string
     {
-        return date('Y-m-d H:i:s');;
+        return date('Y-m-d H:i:s');
     }
 }

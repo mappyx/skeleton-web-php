@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repositories;
 
 use App\Repositories\Contracts\OrdersItemsRepositoryInterface;
@@ -8,11 +9,11 @@ class OrdersItemsRepository extends AbstractRepository implements OrdersItemsRep
 
     public function __construct()
     {
-        Parent::__construct('OrderItems', []);
+        parent::__construct('OrderItems', []);
     }
 
     public function __destruct()
     {
-        Parent::__destruct();
+        parent::__destruct();
     }
 }
