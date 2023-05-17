@@ -1,34 +1,40 @@
 <?php
+
 namespace System;
 
 class Helpers {
 
+    private static $config;
+    private static $routes;
+
     public static function config(string $name)
     {
-        include 'config.php';
-        return $config[$name];
+        if (!isset(self::$config)) {
+            self::$config = include(ROOT . 'config.php');
+        }
+        return self::$config[$name] ?? null;
     }
 
     public static function getRoute(string $name)
     {
-        include 'Routes.php';
-        return $routes[$name];
+        if (!isset(self::$routes)) {
+            self::$routes = include(ROOT . 'Routes.php');
+        }
+        return self::$routes[$name] ?? null;
     }
 
     public static function getResourceJS(string $nameResource)
     {
-        $path = URL . 'Resources/Js/' . $nameResource . '.js';
-        echo $path;
+        return URL . 'Resources/Js/' . $nameResource . '.js';
     }
 
     public static function getResourceCss(string $nameResource)
     {
-        $path = URL . 'Resources/Css/' . $nameResource . '.css';
-        echo $path;
+        return URL . 'Resources/Css/' . $nameResource . '.css';
     }
 
     public static function getCurrentTime()
     {
-        return date('Y-m-d H:i:s');;
+        return date('Y-m-d H:i:s');
     }
 }

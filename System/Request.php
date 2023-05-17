@@ -1,24 +1,48 @@
 <?php
+
 namespace System;
 
 use System\Contracts\RequestInterface;
-use System\Contracts\RouteInterface as Route;
-use ReflectionParameter;
-use ReflectionMethod;
 
 class Request implements RequestInterface
 {
+    private $uri;
+    private $params;
+    private $method;
+    private $headers;
+    private $body;
 
-    protected $route;
-
-    public function __construct(Route $route)
+    public function __construct()
     {
-        $this->route = $route;
-        $p = new ReflectionParameter(array('Some_Class', 'someMethod'));
+        $this->uri = $_SERVER['REQUEST_URI'];
+        $this->params = $_REQUEST;
+        $this->method = $_SERVER['REQUEST_METHOD'];
+        $this->headers = getallheaders();
+        $this->body = file_get_contents('php://input');
     }
-    
-    public function __destruct()
+
+    public function getUri(): string
     {
-        
+        return $this->uri;
+    }
+
+    public function getParams(): array
+    {
+        return $this->params;
+    }
+
+    public function getMethod(): string
+    {
+        return $this->method;
+    }
+
+    public function getHeader(string $header_name): ?string
+    {
+        return isset($this->headers[$header_name]) ? $this->headers[$header_name] : null;
+    }
+
+    public function getBody(): string
+    {
+        return $this->body;
     }
 }

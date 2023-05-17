@@ -1,9 +1,8 @@
 <?php
+
 namespace System;
 
 use Exception;
-use System\Request;
-use System\Route;
 use System\Factory;
 use System\Contracts\RouteInterface;
 use ReflectionMethod;
@@ -13,7 +12,7 @@ class Router
     
     public static function run(RouteInterface $route)
     {
-        $urlDefine = Helpers::getRoute($route->parseStringRoute());
+        $urlDefine = Helpers::getRoute($route->parseStringRoute(new Request));
 
         if (is_array($urlDefine)) {
             $file = ROOT . "App/Controllers" . DS . $urlDefine['controller'] . ".php";
@@ -25,7 +24,7 @@ class Router
                     
                     $instanceController = Factory::setup($class);
                     
-                    $dataController = self::__callMethodWithParametersFromController($instanceController, $urlDefine['action'], $route);
+                    $dataController = self::callMethodWithParametersFromController($instanceController, $urlDefine['action'], $route);
                     
                 } catch(Exception $e) {
                     print_r($e);
@@ -46,10 +45,10 @@ class Router
         }
     }
 
-    protected function __callMethodWithParametersFromController($class, string $method, RouteInterface $route)
+    protected static function callMethodWithParametersFromController($class, string $method, RouteInterface $route)
     {
         $fire_args = array();
-        $args = $route->getParamsFromUrl();
+        $args = $route->getParamsFromUrl(new Request);
         
         $reflection = new ReflectionMethod($class, $method);
 
@@ -65,6 +64,6 @@ class Router
             }
         }
 
-    return call_user_func_array(array($class, $method), $fire_args);
+        return call_user_func_array(array($class, $method), $fire_args);
     }
 }

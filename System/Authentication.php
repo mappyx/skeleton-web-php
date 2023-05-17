@@ -1,43 +1,38 @@
 <?php
+
 namespace System;
 
 use Exception;
 
 class Authentication
 {
-    protected $authorized = null;
+    protected $authorized = false;
 
     public function __construct()
     {
-        
+        session_start();
     }
 
     public function __destruct()
     {
-        
+        session_write_close();
     }
 
-    protected function getCurrentUser()
+    protected function getCurrentUser(): ?array
     {
-        try {
-            $userName = $_SERVER['PHP_AUTH_USER'] ?? '';
-            $userPW = $_SERVER['PHP_AUTH_PW'] ?? '';
+        $userName = $_SERVER['PHP_AUTH_USER'] ?? '';
+        $userPW = $_SERVER['PHP_AUTH_PW'] ?? '';
 
-            if ($_SESSION['auth']) {
-                if ((!empty($userName)) && (!empty($userPW))) {
-                    return json_encode(
-                        [
-                            'userName' => $_SERVER['PHP_AUTH_USER'],
-                            'userPW' => $_SERVER['PHP_AUTH_PW'],
-                        ]
-                    );
-                }
-                return null;
+        if (isset($_SESSION['auth'])) {
+            if (!empty($userName) && !empty($userPW)) {
+                return [
+                    'userName' => $userName,
+                    'userPW' => $userPW,
+                ];
             }
             return null;
-        } catch (Exception $e) {
-
         }
+        return null;
     }
 
     protected function setSession(): bool
@@ -53,11 +48,10 @@ class Authentication
         return false;
     }
 
-    protected function destroySession()
+    protected function destroySession(): bool
     {
         if ($this->authorized) {
-            $_SESSION = array();
-            unset($_COOKIE[session_name()]);
+            session_unset();
             session_destroy();
             return true;
         }
@@ -67,10 +61,10 @@ class Authentication
     protected function checkUser(string $user, string $pw): bool
     {
         try {
-            $user = $this->getCurrentUser();
-            if (($user->userName == $user) && ($user->userPW == $pw)) {
+            $currentUser = $this->getCurrentUser();
+            if ($currentUser && $currentUser['userName'] == $user && $currentUser['userPW'] == $pw) {
                 $this->authorized = true;
-                $this->createSession([]);
+                $this->createSession();
             } else {
                 $this->authorized = false;
             }

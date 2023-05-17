@@ -1,57 +1,33 @@
 <?php
+
 namespace System;
 
 use System\Contracts\RouteInterface;
+use System\Contracts\RequestInterface;
 
 class Route implements RouteInterface
 {
     private $route;
 
-    private $get_params;
-
-    function __construct(bool $get_params = true)
+    public function __construct()
     {
-        $this->get_params = $get_params;
     }
 
-    public function getRoutes(): array
+    public function getRoutes(RequestInterface $request): array
     {
-        $base_url = $this->getCurrentUri();
+        $base_url = $request->getUri();
         $this->route = explode('/', $base_url);
         return $this->route;
     }
 
-    public function parseStringRoute(): string
+    public function parseStringRoute(RequestInterface $request): string
     {
-        $route = $this->getCurrentUri();
-        return $route;
+        return $request->getUri();
     }
 
-    private function getCurrentUri(): string
+    public function getParamsFromUrl(RequestInterface $request): array
     {
-        $basepath = implode('/', array_slice(explode('/', $_SERVER['SCRIPT_NAME']), 0, -1)) . '/';
-        
-        $uri = substr($_SERVER['REQUEST_URI'], strlen($basepath));
-        
-        if (strstr($uri, '?')) $uri = substr($uri, 0, strpos($uri, '?'));
-
-        $uri = '/' . trim($uri, '/');
-
-        return $uri;
-    }
-
-    public function getParamsFromUrl(): array
-    {
-        $basepath = implode('/', array_slice(explode('/', $_SERVER['SCRIPT_NAME']), 0, -1)) . '/';
-        $uri = substr($_SERVER['REQUEST_URI'], strlen($basepath));
-        //$uri = substr($uri, 0, strpos($uri, '?'));
-        
-        if (strstr($uri, '?')) {
-            $params = explode("?", $uri);
-            $params = $params[1];
-
-            parse_str($params, $params);
-        }
-        return $params ?? [];
+        $params = $request->getParams();
+        return $params;
     }
 }
