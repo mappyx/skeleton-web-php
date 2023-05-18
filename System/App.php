@@ -19,6 +19,6 @@ class App {
 
     public function run() {
         $template = new ViewsTemplate();
-        Router::run(new Route(true));
+        Router::run(new Route());
     }
 }

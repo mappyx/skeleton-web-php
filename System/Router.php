@@ -9,11 +9,10 @@ use ReflectionMethod;
 
 class Router
 {
-    
+
     public static function run(RouteInterface $route)
     {
         $urlDefine = Helpers::getRoute($route->parseStringRoute(new Request));
-
         if (is_array($urlDefine)) {
             $file = ROOT . "App/Controllers" . DS . $urlDefine['controller'] . ".php";
     
@@ -25,7 +24,7 @@ class Router
                     $instanceController = Factory::setup($class);
                     
                     $dataController = self::callMethodWithParametersFromController($instanceController, $urlDefine['action'], $route);
-                    
+                   
                 } catch(Exception $e) {
                     print_r($e);
                 }
@@ -35,13 +34,12 @@ class Router
     
             if (is_readable($path)) {
                 require_once($path);
-                
             } else {
                 echo $path;
             }
         } else {
-            //header("Status: 301 Moved Permanently");
-            //header("Location: ".Helpers::config('url'));
+            header("Status: 301 Moved Permanently");
+            header("Location: ".Helpers::config('url'));
         }
     }
 
@@ -63,7 +61,6 @@ class Router
                 $fire_args[$arg->name] = null;
             }
         }
-
         return call_user_func_array(array($class, $method), $fire_args);
     }
 }

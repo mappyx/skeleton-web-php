@@ -1,12 +1,13 @@
 <?php
+
 namespace App\Controllers;
 
-use Database\Database;
+use System\View;
 
-class Controller {
-
-    public $name = __CLASS__;
-
+abstract class Controller {
+    
+    protected $views = [];
+    
     public function __construct()
     {
         
@@ -14,6 +15,14 @@ class Controller {
 
     public function __destruct()
     {
-        
+        $this->views = [];
+    }
+    
+    protected function addView(string $name, View $view) {
+        $this->views[$name] = $view;
+    }
+    
+    protected function getView(string $name) {
+        return $this->views[$name];
     }
 }

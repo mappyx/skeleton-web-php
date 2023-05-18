@@ -1,4 +1,4 @@
 <div class="container">
 <h1>hola</h1>
-<?php echo $dataController; ?>
+<?php var_dump($dataController); ?>
 </div>

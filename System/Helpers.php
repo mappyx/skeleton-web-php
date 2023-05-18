@@ -7,10 +7,23 @@ class Helpers {
     private static $config;
     private static $routes;
 
+    public function __construct()
+    {
+        if (!isset(self::$routes)) {
+            include(ROOT . 'System/Routes.php');
+            self::$routes = $routes;
+        }
+        if (!isset(self::$config)) {
+            include(ROOT . 'System/config.php');
+            self::$config = $config;
+        }
+    }
+
     public static function config(string $name)
     {
         if (!isset(self::$config)) {
-            self::$config = include(ROOT . 'config.php');
+            include(ROOT . 'System/config.php');
+            self::$config = $config;
         }
         return self::$config[$name] ?? null;
     }
@@ -18,7 +31,8 @@ class Helpers {
     public static function getRoute(string $name)
     {
         if (!isset(self::$routes)) {
-            self::$routes = include(ROOT . 'Routes.php');
+            include(ROOT . 'System/Routes.php');
+            self::$routes = $routes;
         }
         return self::$routes[$name] ?? null;
     }

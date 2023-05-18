@@ -2,7 +2,6 @@
 namespace App\Controllers;
 
 use App\Repositories\ProductsRepository;
-use Database\Database;
 
 class HomeController extends Controller
 {
@@ -18,8 +17,8 @@ class HomeController extends Controller
         
     }
 
-    public function index($opt = null)
+    public function index()
     {
-        return 'hola';
+        return ['message' => 'hola', 'products' => [1,2,3]];
     }
 }
