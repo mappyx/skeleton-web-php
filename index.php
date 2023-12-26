@@ -1,5 +1,4 @@
 <?php
-session_start();
 include_once('System/Helpers.php');
 include_once('System/Autoloader.php');
 

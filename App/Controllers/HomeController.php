@@ -19,6 +19,6 @@ class HomeController extends Controller
 
     public function index()
     {
-        return ['message' => 'hola', 'products' => [1,2,3]];
+        //TODO
     }
 }

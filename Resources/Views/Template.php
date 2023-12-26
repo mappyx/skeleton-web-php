@@ -21,8 +21,8 @@ class Template
             <link rel="stylesheet" type="text/css" href="<?= Helpers::getResourceCss('bootstrap.min'); ?>">
             <link rel="stylesheet" type="text/css" href="<?= Helpers::getResourceCss('font-awesome.min'); ?>">
             <link rel="stylesheet" type="text/css" href="<?= Helpers::getResourceCss('style'); ?>">
-            <script src="<?= Helpers::getResourceJS('jquery-3.6.0.min'); ?>" type="text/javascript" defer></script>
-            <script src="<?= Helpers::getResourceJS('bootstrap.bundle.min'); ?>" type="text/javascript" defer></script>
+            <script src="<?= Helpers::getResourceJS('jquery-1.11.3.min'); ?>" type="text/javascript" defer></script>
+            <script src="<?= Helpers::getResourceJS('bootstrap.min'); ?>" type="text/javascript" defer></script>
         </head>
         <body>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
