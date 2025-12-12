@@ -51,4 +51,10 @@ class Helpers {
     {
         return date('Y-m-d H:i:s');
     }
+
+    public static function csrf()
+    {
+        $token = Csrf::generateToken();
+        return '<input type="hidden" name="csrf_token" value="' . $token . '">';
+    }
 }

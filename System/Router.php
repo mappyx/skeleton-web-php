@@ -14,6 +14,11 @@ class Router
     {
         $urlDefine = Helpers::getRoute($route->parseStringRoute(new Request));
         if (is_array($urlDefine)) {
+            // Validate controller name to prevent directory traversal
+            if (!preg_match('/^[a-zA-Z0-9_]+$/', $urlDefine['controller'])) {
+                throw new Exception("Invalid controller name");
+            }
+
             $file = ROOT . "App/Controllers" . DS . $urlDefine['controller'] . ".php";
     
             if (is_readable($file)) {
@@ -30,6 +35,11 @@ class Router
                 }
             } 
     
+            // Validate view path
+            if (strpos($urlDefine['view'], '..') !== false) {
+                throw new Exception("Invalid view path");
+            }
+
             $path = ROOT . "Resources/Views/" . $urlDefine['view'] . '.php';
     
             if (is_readable($path)) {

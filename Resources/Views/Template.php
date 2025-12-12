@@ -8,8 +8,16 @@ class Template
 {
     public function __construct()
     {
+        // Security Headers
         header('X-Content-Type-Options: nosniff');
+        header('X-Frame-Options: SAMEORIGIN');
         header('X-XSS-Protection: 1; mode=block');
+        header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://code.jquery.com https://stackpath.bootstrapcdn.com; style-src 'self' 'unsafe-inline' https://stackpath.bootstrapcdn.com; font-src 'self' https://stackpath.bootstrapcdn.com;");
+
+        // HSTS (Only if HTTPS/Production)
+        if (getenv('APP_ENV') === 'production') {
+            header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
+        }
         ?>
         <!DOCTYPE html>
         <html lang="en">
@@ -17,7 +25,7 @@ class Template
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <meta http-equiv="X-UA-Compatible" content="ie=edge">
-            <title><?= htmlspecialchars(Helpers::config('name_app'), ENT_QUOTES, 'UTF-8'); ?></title>
+            <title><?= htmlspecialchars(Helpers::config('name_app') ?? '', ENT_QUOTES, 'UTF-8'); ?></title>
             <link rel="stylesheet" type="text/css" href="<?= Helpers::getResourceCss('bootstrap.min'); ?>">
             <link rel="stylesheet" type="text/css" href="<?= Helpers::getResourceCss('font-awesome.min'); ?>">
             <link rel="stylesheet" type="text/css" href="<?= Helpers::getResourceCss('style'); ?>">
@@ -26,7 +34,7 @@ class Template
         </head>
         <body>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="#"><?= htmlspecialchars(Helpers::config('name_app'), ENT_QUOTES, 'UTF-8'); ?></a>
+            <a class="navbar-brand" href="#"><?= htmlspecialchars(Helpers::config('name_app') ?? '', ENT_QUOTES, 'UTF-8'); ?></a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -61,7 +69,7 @@ class Template
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
-                        <p class="text-center text-muted mb-0">&copy; <?= date('Y') ?> <?= htmlspecialchars(Helpers::config('name_app'), ENT_QUOTES, 'UTF-8'); ?>. Todos los derechos reservados.</p>
+                        <p class="text-center text-muted mb-0">&copy; <?= date('Y') ?> <?= htmlspecialchars(Helpers::config('name_app') ?? '', ENT_QUOTES, 'UTF-8'); ?>. Todos los derechos reservados.</p>
                     </div>
                 </div>
             </div>
