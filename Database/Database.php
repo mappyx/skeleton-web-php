@@ -7,37 +7,44 @@ use PDOException;
 
 class Database 
 {
-    protected $instance;
+    protected static $dbInstance;
+    protected $connection;
 
-    public function __construct(array $args)
+    private function __construct(array $args)
     {
         $this->connection($args['dbname'], $args['user'], $args['password'], $args['host'] ?? 'localhost', $args['manager'] ?? 'mysql');
     }
 
-    public function __destruct()
+    public static function getInstance(array $args = []): Database
     {
-        $this->instance = null;
+        if (self::$dbInstance === null) {
+            self::$dbInstance = new self($args);
+        }
+        return self::$dbInstance;
     }
 
-    public function connection(string $dbname, string $user, string $password, string $host = 'localhost', string $manager = 'mysql'): bool
+    public function __destruct()
+    {
+        $this->connection = null;
+    }
+
+    public function connection(string $dbname, string $user, string $password, string $host = 'localhost', string $manager = 'mysql'): void
     {
         try {
             $dsn = "$manager:host=$host;dbname=$dbname;charset=utf8mb4";
-            $this->instance = new PDO($dsn, $user, $password, [
+            $this->connection = new PDO($dsn, $user, $password, [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_EMULATE_PREPARES => false,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
             ]);
-            return true;
         } catch (PDOException $e) {
             error_log('Database connection error: ' . $e->getMessage());
-            $this->instance = null;
-            return false;
+            throw new \Exception("Database connection error: " . $e->getMessage());
         }
     }
 
     public function getConn(): ?PDO
     {
-        return $this->instance;
+        return $this->connection;
     }
 }
