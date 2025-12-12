@@ -49,8 +49,9 @@ services:
       - dbdata:/var/lib/mysql
     networks:
       - skeleton-network
-    ports:
-      - "${DB_PORT}:3306"
+    # Port removed for security - use docker exec to access MySQL if needed
+    # ports:
+    #   - "${DB_PORT}:3306"
 
 networks:
   skeleton-network:

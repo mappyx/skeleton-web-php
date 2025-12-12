@@ -62,9 +62,19 @@ class Authentication
     {
         try {
             $currentUser = $this->getCurrentUser();
-            if ($currentUser && $currentUser['userName'] == $user && $currentUser['userPW'] == $pw) {
-                $this->authorized = true;
-                $this->createSession();
+            if ($currentUser && $currentUser['userName'] == $user) {
+                // In a real application, fetch hashed password from database
+                // For now, this is a placeholder - you should store hashed passwords
+                // Example: $hashedPassword = getUserPasswordFromDB($user);
+                // if (password_verify($pw, $hashedPassword)) { ... }
+                
+                // Temporary: Using timing-safe comparison
+                if (hash_equals($currentUser['userPW'], $pw)) {
+                    $this->authorized = true;
+                    $this->createSession();
+                } else {
+                    $this->authorized = false;
+                }
             } else {
                 $this->authorized = false;
             }
@@ -74,8 +84,30 @@ class Authentication
         }
     }
 
+    /**
+     * Hash a password securely
+     */
+    public static function hashPassword(string $password): string
+    {
+        return password_hash($password, PASSWORD_ARGON2ID);
+    }
+
+    /**
+     * Verify a password against a hash
+     */
+    public static function verifyPassword(string $password, string $hash): bool
+    {
+        return password_verify($password, $hash);
+    }
+
     protected function createSession(array $param = []): void
     {
-        session_start($param);
+        // Regenerate session ID to prevent session fixation
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_regenerate_id(true);
+        } else {
+            session_start($param);
+            session_regenerate_id(true);
+        }
     }
 }

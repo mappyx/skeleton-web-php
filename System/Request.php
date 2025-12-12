@@ -15,8 +15,17 @@ class Request implements RequestInterface
     public function __construct()
     {
         $this->uri = $_SERVER['REQUEST_URI'];
-        $this->params = $_REQUEST;
         $this->method = $_SERVER['REQUEST_METHOD'];
+        
+        // Use explicit $_GET and $_POST instead of $_REQUEST
+        if ($this->method === 'GET') {
+            $this->params = $_GET;
+        } elseif (in_array($this->method, ['POST', 'PUT', 'DELETE', 'PATCH'])) {
+            $this->params = $_POST;
+        } else {
+            $this->params = [];
+        }
+        
         $this->headers = getallheaders();
         $this->body = file_get_contents('php://input');
     }

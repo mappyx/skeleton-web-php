@@ -31,9 +31,38 @@ class Entity implements BasicActionEntityInterface
         return date('Y-m-d H:i:s');
     }
 
+    /**
+     * Validate column names to prevent SQL injection
+     * Only allows alphanumeric characters, underscores, and asterisk
+     */
+    protected function validateColumns(array $columns): array
+    {
+        $validated = [];
+        foreach ($columns as $column) {
+            if ($column === '*' || preg_match('/^[a-zA-Z0-9_]+$/', $column)) {
+                $validated[] = $column;
+            } else {
+                throw new \InvalidArgumentException("Invalid column name: $column");
+            }
+        }
+        return $validated;
+    }
+
+    /**
+     * Validate single column name
+     */
+    protected function validateColumn(string $column): string
+    {
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $column)) {
+            throw new \InvalidArgumentException("Invalid column name: $column");
+        }
+        return $column;
+    }
+
     public function select(array $columns = ['*']): array
     {
-        $cols = implode(', ', $columns);
+        $validatedCols = $this->validateColumns($columns);
+        $cols = implode(', ', $validatedCols);
         $stmt = $this->connection->prepare("SELECT $cols FROM {$this->table}");
         $stmt->execute();
         return $stmt->fetchAll();
@@ -41,8 +70,10 @@ class Entity implements BasicActionEntityInterface
 
     public function selectWhere(string $column, $value, array $columns = ['*']): array
     {
-        $cols = implode(', ', $columns);
-        $stmt = $this->connection->prepare("SELECT $cols FROM {$this->table} WHERE $column = :value");
+        $validatedCols = $this->validateColumns($columns);
+        $validatedColumn = $this->validateColumn($column);
+        $cols = implode(', ', $validatedCols);
+        $stmt = $this->connection->prepare("SELECT $cols FROM {$this->table} WHERE $validatedColumn = :value");
         $stmt->bindParam(':value', $value);
         $stmt->execute();
         return $stmt->fetchAll();
@@ -50,7 +81,8 @@ class Entity implements BasicActionEntityInterface
 
     public function delete(string $column, $value): bool
     {
-        $stmt = $this->connection->prepare("DELETE FROM {$this->table} WHERE $column = :value");
+        $validatedColumn = $this->validateColumn($column);
+        $stmt = $this->connection->prepare("DELETE FROM {$this->table} WHERE $validatedColumn = :value");
         $stmt->bindParam(':value', $value);
         return $stmt->execute();
     }
@@ -71,13 +103,15 @@ class Entity implements BasicActionEntityInterface
 
     public function update(array $values, $id, string $column = 'id'): bool
     {
+        $validatedColumn = $this->validateColumn($column);
         $sets = [];
         foreach (array_keys($values) as $key) {
-            $sets[] = "$key = :$key";
+            $validatedKey = $this->validateColumn($key);
+            $sets[] = "$validatedKey = :$key";
         }
         $setStr = implode(', ', $sets);
         
-        $stmt = $this->connection->prepare("UPDATE {$this->table} SET $setStr WHERE $column = :id");
+        $stmt = $this->connection->prepare("UPDATE {$this->table} SET $setStr WHERE $validatedColumn = :id");
         
         $stmt->bindValue(':id', $id);
         foreach ($values as $key => $value) {
