@@ -12,7 +12,7 @@ class Template
         header('X-Content-Type-Options: nosniff');
         header('X-Frame-Options: SAMEORIGIN');
         header('X-XSS-Protection: 1; mode=block');
-        header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://code.jquery.com https://stackpath.bootstrapcdn.com; style-src 'self' 'unsafe-inline' https://stackpath.bootstrapcdn.com; font-src 'self' https://stackpath.bootstrapcdn.com;");
+        header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com /public/js/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:;");
 
         // HSTS (Only if HTTPS/Production)
         if (getenv('APP_ENV') === 'production') {
@@ -20,60 +20,81 @@ class Template
         }
         ?>
         <!DOCTYPE html>
-        <html lang="en">
+        <html lang="es">
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <meta http-equiv="X-UA-Compatible" content="ie=edge">
-            <title><?= htmlspecialchars(Helpers::config('name_app') ?? '', ENT_QUOTES, 'UTF-8'); ?></title>
-            <link rel="stylesheet" type="text/css" href="<?= Helpers::getResourceCss('bootstrap.min'); ?>">
-            <link rel="stylesheet" type="text/css" href="<?= Helpers::getResourceCss('font-awesome.min'); ?>">
-            <link rel="stylesheet" type="text/css" href="<?= Helpers::getResourceCss('style'); ?>">
-            <script src="<?= Helpers::getResourceJS('jquery-1.11.3.min'); ?>" type="text/javascript" defer></script>
-            <script src="<?= Helpers::getResourceJS('bootstrap.min'); ?>" type="text/javascript" defer></script>
+            <title><?= htmlspecialchars(Helpers::config('name_app') ?? 'Dulce Cremoso', ENT_QUOTES, 'UTF-8'); ?></title>
+            
+            <!-- Google Fonts -->
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+            
+            <!-- Custom Styles -->
+            <link rel="stylesheet" href="/public/css/yogurt.css">
         </head>
         <body>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="#"><?= htmlspecialchars(Helpers::config('name_app') ?? '', ENT_QUOTES, 'UTF-8'); ?></a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Features</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Pricing</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" href="#">Disabled</a>
-                    </li>
-                </ul>
-                <form class="form-inline ml-auto">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                </form>
-            </div>
-        </nav>
+            <!-- Header -->
+            <header class="header">
+                <nav class="nav">
+                    <a href="/" class="logo">
+                        <img src="/public/images/logo.png" alt="<?= htmlspecialchars(Helpers::config('name_app') ?? 'Dulce Cremoso', ENT_QUOTES, 'UTF-8'); ?> Logo">
+                        <span class="logo-text"><?= htmlspecialchars(Helpers::config('name_app') ?? 'Dulce Cremoso', ENT_QUOTES, 'UTF-8'); ?></span>
+                    </a>
+                    <ul class="nav-links">
+                        <li><a href="#productos">Productos</a></li>
+                        <li><a href="#proceso">Proceso</a></li>
+                        <li><a href="#contacto">Contacto</a></li>
+                    </ul>
+                </nav>
+            </header>
+
+            <!-- Main Content Area -->
+            <main class="main-content">
         <?php
     }
 
     public function __destruct()
     {
         ?>
-        <footer class="footer mt-auto py-3">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <p class="text-center text-muted mb-0">&copy; <?= date('Y') ?> <?= htmlspecialchars(Helpers::config('name_app') ?? '', ENT_QUOTES, 'UTF-8'); ?>. Todos los derechos reservados.</p>
+            </main>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h3 class="footer-title"><?= htmlspecialchars(Helpers::config('name_app') ?? 'Dulce Cremoso', ENT_QUOTES, 'UTF-8'); ?></h3>
+                        <p class="footer-description">Yogurt artesanal hecho con amor y los mejores ingredientes naturales.</p>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h4 class="footer-subtitle">Contacto</h4>
+                        <ul class="footer-list">
+                            <li>📞 +1 (555) 123-4567</li>
+                            <li>📧 hola@dulcecremoso.com</li>
+                            <li>📍 Calle Principal 123, Ciudad</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <h4 class="footer-subtitle">Síguenos</h4>
+                        <div class="footer-social">
+                            <a href="#" class="social-link" aria-label="Facebook">📘</a>
+                            <a href="#" class="social-link" aria-label="Instagram">📷</a>
+                            <a href="#" class="social-link" aria-label="Twitter">🐦</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </footer>
+                
+                <div class="footer-bottom">
+                    <p>&copy; <?= date('Y') ?> <?= htmlspecialchars(Helpers::config('name_app') ?? 'Dulce Cremoso', ENT_QUOTES, 'UTF-8'); ?>. Todos los derechos reservados. Hecho con ❤️</p>
+                </div>
+            </footer>
+            
+            <!-- Smooth Scroll Script -->
+            <script src="/public/js/smooth-scroll.js"></script>
         </body>
         </html>
         <?php
